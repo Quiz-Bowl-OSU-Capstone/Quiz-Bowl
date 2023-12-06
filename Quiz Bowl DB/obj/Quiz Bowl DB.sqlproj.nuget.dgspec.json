@@ -1,0 +1,52 @@
+{
+  "format": 1,
+  "restore": {
+    "c:\\Users\\j\\OneDrive\\Documents\\GitHub\\Quiz-Bowl\\Quiz Bowl DB\\Quiz Bowl DB.sqlproj": {}
+  },
+  "projects": {
+    "c:\\Users\\j\\OneDrive\\Documents\\GitHub\\Quiz-Bowl\\Quiz Bowl DB\\Quiz Bowl DB.sqlproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "c:\\Users\\j\\OneDrive\\Documents\\GitHub\\Quiz-Bowl\\Quiz Bowl DB\\Quiz Bowl DB.sqlproj",
+        "projectName": "Quiz Bowl DB",
+        "projectPath": "c:\\Users\\j\\OneDrive\\Documents\\GitHub\\Quiz-Bowl\\Quiz Bowl DB\\Quiz Bowl DB.sqlproj",
+        "packagesPath": "C:\\Users\\j\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\j\\OneDrive\\Documents\\GitHub\\Quiz-Bowl\\Quiz Bowl DB\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\j\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net46"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net46": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "noWarn": [
+            "NU5128"
+          ]
+        }
+      },
+      "frameworks": {
+        "net46": {
+          "dependencies": {
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            }
+          }
+        }
+      }
+    }
+  }
+}
