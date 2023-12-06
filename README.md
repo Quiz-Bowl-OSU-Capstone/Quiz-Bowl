@@ -11,9 +11,9 @@ This is the official repository for the Quiz Bowl program for CS capstone 2023-2
 ## Required Software Installation Instructions
 For the backend server to run locally, you must install and work with Azure Data Studio.
 
-1. Download/install Azure Data Studio here: https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio. 
+1. Download/install Azure Data Studio [here](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio). 
 
-2. Download the required software for Azure SQL Database here: https://learn.microsoft.com/en-us/azure/azure-sql/database/local-dev-experience-set-up-dev-environment. This includes Docker Desktop, and if you are using Windows, Windows Subsystem for Linux. You'll also want to follow the instructions to install the SQL Database Projects extension, located in the "Install extension" section.
+2. Download the required software for Azure SQL Database [here](https://learn.microsoft.com/en-us/azure/azure-sql/database/local-dev-experience-set-up-dev-environment). This includes Docker Desktop, and if you are using Windows, Windows Subsystem for Linux. You'll also want to follow the instructions to install the SQL Database Projects extension, located in the "Install extension" section.
 
 ## Open The Database Project Locally
 This guide assumes that you already have either downloaded the project files located in this repository or you have cloned the repository to your local machine using the GitHub application. If you have not done so, download a copy of the repository to your local machine and store it somewhere safe.
@@ -37,4 +37,4 @@ This guide assumes that you already have either downloaded the project files loc
 
 7. Click "Publish".
 
-Note that this will create and start a Docker container running locally on your machine that contains the database. This container does not have a web or graphical interface - you will only be able to use the database by connecting to it with an SQL client and running commands through that. I would recommend something like DBeaver: https://dbeaver.io/
+Note that this will create and start a Docker container running locally on your machine that contains the database. This container does not have a web or graphical interface - you will only be able to use the database by connecting to it with an SQL client and running commands through that. I would recommend something like [DBeaver](https://dbeaver.io/)
