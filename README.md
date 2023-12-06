@@ -39,4 +39,4 @@ This guide assumes that you already have either downloaded the project files loc
 
 7. Click "Publish".
 
-Note that this will create and start a Docker container running locally on your machine that contains the database. This container does not have a web or graphical interface - you will only be able to use the database by connecting to it with an SQL client and running commands through that. I would recommend something like [DBeaver](https://dbeaver.io/)
+Note that this will create and start a Docker container running locally on your machine that contains the database. This container does not have a web or graphical interface - you will only be able to use the database by connecting to it with an SQL client and running commands through that. I would recommend something like [DBeaver](https://dbeaver.io/), or use the built in Connections interface for Azure Data Studio.
