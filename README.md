@@ -11,9 +11,9 @@ This is the official repository for the Quiz Bowl program for CS capstone 2023-2
 ## Required Software Installation Instructions
 For the backend server to run locally, you must install and work with Azure Data Studio.
 
-1. Download the required software for Azure SQL Database [here](https://learn.microsoft.com/en-us/azure/azure-sql/database/local-dev-experience-set-up-dev-environment). This includes Docker Desktop, and if you are using Windows, Windows Subsystem for Linux. You'll also want to follow the instructions to install the SQL Database Projects extension, located in the "Install extension" section. Install WSL first if you need to install that one, as Docker forces your computer to restart in order to install.
+1. Download/install Azure Data Studio [here](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio).
 
-2. Download/install Azure Data Studio [here](https://learn.microsoft.com/en-us/azure-data-studio/download-azure-data-studio).
+2. Download the required software for Azure SQL Database [here](https://learn.microsoft.com/en-us/azure/azure-sql/database/local-dev-experience-set-up-dev-environment). This includes Docker Desktop, and if you are using Windows, Windows Subsystem for Linux. You'll also want to follow the instructions to install the SQL Database Projects extension, located in the "Install extension" section. Install WSL first if you need to install that one, as Docker forces your computer to restart in order to install.
 
 3. If you have not already, download a copy of the files from this repository, or clone the repository to your PC using the GitHub desktop application.
 
