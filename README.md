@@ -1,6 +1,6 @@
 # Quiz Bowl Capstone Repository
 ### Description
-This repository contains the Azure Functions code for the Quiz Bowl API, a crucial part of the Quiz Bowl project. Code in this repository will be automatically linked and deployed to the production Quiz Bowl database.
+This repository contains the Azure Functions code for the Quiz Bowl API, a crucial part of the Quiz Bowl project. The code in this repository is the same code as is in the "qzblapi" Function App in the Azure Portal. Any deployments made to the main branch will automatically redeploy on the qzblapi app (AKA PRODUCTION) on the Azure platform.
 
 ### File Structure
 This entire repository contains a single Functions app. The src folder contains all of the individual Functions that are part of this app.
