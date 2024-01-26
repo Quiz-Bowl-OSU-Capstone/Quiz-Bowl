@@ -13,7 +13,7 @@ The database is accessed via the cloud for development purposes. All functions t
 ### Using This Repository
 To use this repository, the following commands can be run from the repository folder:
 
-#### func new --template "Http Trigger" --name 'name here'
+#### func new --template "Http Trigger" --name "name here"
 Creates a new function inside of this application. Select Node for runtime and Javascript for language.
 
 #### func start
