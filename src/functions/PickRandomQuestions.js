@@ -1,13 +1,18 @@
 const { app } = require('@azure/functions');
+const sql = require('mssql');
+const connString = process.env['dbconn'];
 
 app.http('PickRandomQuestions', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: async (request, context) => {
-        context.log(`Http function processed request for url "${request.url}"`);
+        const pool = await sql.connect(connString);
 
-        const name = request.query.get('name') || await request.text() || 'world';
+        const data = await pool.request().query("SELECT * FROM questions");
+        var randNum = Math.floor(Math.random() * data.recordset.length);
 
-        return { body: `Hello, ${name}!` };
+        context.res = {
+            body: data.recordset[randNum]
+        };
     }
 });

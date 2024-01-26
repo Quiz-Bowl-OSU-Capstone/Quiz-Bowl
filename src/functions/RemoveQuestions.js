@@ -1,13 +1,20 @@
 const { app } = require('@azure/functions');
+const sql = require('mssql')
+const connString = process.env['dbconn'];
 
 app.http('RemoveQuestions', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: async (request, context) => {
-        context.log(`Http function processed request for url "${request.url}"`);
+        const pool = await sql.connect(connString);
 
-        const name = request.query.get('name') || await request.text() || 'world';
+        // Later on, these parameters will be passed into the API when it is called, but for demo purposes they are set here.
+        var target = 3;
 
-        return { body: `Hello, ${name}!` };
+        const data = await pool.request().query("DELETE FROM questions WHERE id = " + target);
+
+        context.res = {
+            body: data
+        };
     }
 });
