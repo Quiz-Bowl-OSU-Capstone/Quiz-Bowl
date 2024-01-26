@@ -1,6 +1,6 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql')
-const connString = "Server = tcp: osuquizbowldb.database.windows.net, 1433;Initial Catalog = quizbowldb;Persist Security Info = False;User ID = qzbowladmin; Password = tvHf37hYkVhQ; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False;Connection Timeout = 30";
+const connString = process.env.dbconn;
 
 // Limited to the first 10 elements for easy readability, but can easily be modified to include search filters.
 app.http('ListAllQuestions', {
