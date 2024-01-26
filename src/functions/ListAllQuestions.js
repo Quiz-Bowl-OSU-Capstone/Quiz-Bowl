@@ -11,6 +11,6 @@ app.http('ListAllQuestions', {
 
         const data = await pool.request().query("SELECT TOP 10 * FROM [dbo].[QuizQuestions]");
     
-        return { body: data.recordset };
+        return { body: JSON.stringify(data.recordset) };
     }
 });

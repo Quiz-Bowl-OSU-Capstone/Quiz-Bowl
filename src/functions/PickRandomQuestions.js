@@ -22,6 +22,6 @@ app.http('PickRandomQuestions', {
             results.push(question.recordset[0]);
         }
 
-        return { body: results };
+        return { body: JSON.stringify(results) };
     }
 });
