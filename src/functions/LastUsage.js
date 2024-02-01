@@ -1,5 +1,6 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
+const connString = process.env.dbconn;
 
 app.http('LastUsage', {
     methods: ['GET', 'POST'],

@@ -1,15 +1,16 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
-const connString = "Server = osuquizbowldb.database.windows.net,1433;Initial Catalog = quizbowldb;Persist Security Info = False;User ID = qzbowladmin; Password = tvHf37hYkVhQ; MultipleActiveResultSets = False; Encrypt = True; TrustServerCertificate = False;Connection Timeout = 30";
+const connString = process.env.dbconn;
 
-// Later on, these parameters will be passed into the API when it is called, but for demo purposes they are set here.
-var question = "Do hippos exist?" + ", ";
-var answers = "Yes" + ", ";
-var difficulty = "1" + ", ";
-var topic = "Hippos" + ", ";
-var species = "Hippo" + ", ";
-var resource = "hipposdoexist.com" + ", ";
-var lastUpdated = "2023-09-12";
+// Will add a question to the database. All parameters listed below are required and need to be encoded in URI format using encodeURI(). The lastupdate parameter needs to be decodable in date-time format.
+
+// URL Parameters:
+// - qst: STRING - The question.
+// - ans: STRING - The answer.
+// - diff: INT - The difficulty of the question.
+// - topic: STRING - The question topic.
+// - species: STRING - The species of the question.
+// - resource: STRING - The location the question came from.
 
 app.http('AddQuestions', {
     methods: ['GET', 'POST'],
@@ -17,13 +18,37 @@ app.http('AddQuestions', {
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
 
-        var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, Entered_Updated) VALUES (" + species + resource + difficulty + question + answers + topic + lastUpdated + ")";
-        console.log(queryText);
+        const question = decodeURI(request.query.get('qst'));
+        const answer = decodeURI(request.query.get('ans'));
+        const difficulty = decodeURI(request.query.get('diff'));
+        const topic = decodeURI(request.query.get('topic'));
+        const species = decodeURI(request.query.get('species'));
+        const resource = decodeURI(request.query.get('resource'));
+        
+        // lastupdated is automatically set to UTC -8, or PST.
+        var lastupdated = new Date(Date.now() - (1000*60*60*8)).toJSON();
+        var data;
 
-        const data = await pool.request().query(queryText);
+        if (
+            question != null &&
+            answer != null &&
+            difficulty != null &&
+            topic != null &&
+            species != null &&
+            resource != null &&
+            lastupdated != null
+        ){
+            var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, updated) VALUES ('" + species + "', '" + resource + "', " + difficulty + ", '" + question + "', '" + answer + "', '" + topic + "', '" + lastupdated + "')";
+            console.log(queryText);
 
-        context.res = {
-            body: data
-        };
+            data = await pool.request().query(queryText);
+
+            context.res = {
+                body: data
+            };
+        } else {
+            data = "Error: One or more required parameters is missing. Check and try again."
+        }
+        return { body: JSON.stringify(data) };
     }
 });

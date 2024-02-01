@@ -1,6 +1,6 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql')
-const connString = process.env['dbconn'];
+const connString = process.env.dbconn;
 
 // Will delete a question from the database, given an ID number.
 
@@ -13,11 +13,12 @@ app.http('RemoveQuestions', {
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
         const target = request.query.get('id') || -1;
+        var data = "";
 
         if (target != -1) {
-            const data = await pool.request().query("DELETE FROM [dbo].[QuizQuestions] WHERE id = " + target);
+            data = await pool.request().query("DELETE FROM [dbo].[QuizQuestions] WHERE id = " + target);
         } else {
-            const data = "";
+            data = "Error: You need to provide a target to delete!";
         }
 
         context.res = {
