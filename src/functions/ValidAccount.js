@@ -19,10 +19,12 @@ app.http('ValidAccount', {
 
         const data = await pool.request().query(query);
 
-        if (data.recordset.length > 0) {
+        if (data.recordset.length == 1) {
             return { body: JSON.stringify(data.recordset[0]) };
+        } else if (data.recordset.length > 1){
+            return { body: `{"username":"Multiple accounts found with the same information. This is a data error.", "userID":"0"}` };
         } else {
-            return { body: `No account found!` };
+            return { body: `{"username":"No account was found for the provided information.", "userID":"0"}` };
         }
     }
 });
