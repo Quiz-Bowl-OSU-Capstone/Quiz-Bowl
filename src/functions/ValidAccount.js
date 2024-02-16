@@ -13,8 +13,8 @@ app.http('ValidAccount', {
     authLevel: 'anonymous',
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
-        const user = request.query.get('username');
-        const pass = request.query.get('password');
+        const user = decodeURI(request.query.get('username'));
+        const pass = decodeURI(request.query.get('password'));
         const query = "SELECT * FROM [dbo].[Accounts] WHERE username=N'" + user + "' AND password=N'" + pass + "'"
 
         const data = await pool.request().query(query);

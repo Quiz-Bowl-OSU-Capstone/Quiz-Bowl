@@ -6,36 +6,24 @@ app.http('LastUsage', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: async (request, context) => {
-        context.log('JavaScript HTTP trigger function processed a request.');
+        const pool = await sql.connect(connString);
+        const target = decodeURI(request.query.get('id') || -1);
+        const timestamp = decodeURI(request.query.get('time') || new Date(Date.now()).toString());
+        var data = "";
 
-        // parse request body to get the question , place, and datetime
-        const {question, date, time} = request.body;
-        const placeDateTime = `${date} - ${time}`;
+        var queryString = "UPDATE [dbo].[QuizQuestions] SET updated = " + timestamp + " WHERE id = " + target
+        console.log(queryString)
 
-        //connect to the sql server
-        await sql.connect(connString);
-
-        // define a sql query to update the last usage place and datetime for the question
-        const query = `
-        UPDATE QuizQuestions
-        SET Usage_date_time = @placeDateTime
-        WHERE Question = @question`;
-
-        const result = await sql.query(query, {
-            question: question,
-            placeDateTime: placeDateTime
-        });
-
-        await sql.close();
-        
-        // const name = (req.query.name || (req.body && req.body.name));
-        // const responseMessage = name
-        //     ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        //     : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+        if (target != -1) {
+            data = await pool.request().query(queryString);
+        } else {
+            data = "Error: You need to provide a target question to update!";
+        }
 
         context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: responseMessage
+            body: data
         };
+
+        return { body: JSON.stringify(data) };
     }
 });

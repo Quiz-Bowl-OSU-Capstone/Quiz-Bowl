@@ -1,5 +1,5 @@
 const { app } = require('@azure/functions');
-const sql = require('mssql')
+const sql = require('mssql');
 const connString = process.env.dbconn;
 
 // Will fetch a given number of questions from the top of the database.
@@ -12,7 +12,7 @@ app.http('ListAllQuestions', {
     authLevel: 'anonymous',
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
-        const amount = request.query.get('amt') || 25;
+        const amount = decodeURI(request.query.get('amt')) || 12;
 
         const data = await pool.request().query("SELECT TOP " + amount + " * FROM [dbo].[QuizQuestions]");
     

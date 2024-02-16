@@ -12,7 +12,7 @@ app.http('RemoveQuestions', {
     authLevel: 'anonymous',
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
-        const target = request.query.get('id') || -1;
+        const target = decodeURI(request.query.get('id')) || -1;
         var data = "";
 
         if (target != -1) {
