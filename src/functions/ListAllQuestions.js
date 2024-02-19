@@ -12,10 +12,10 @@ app.http('ListAllQuestions', {
     authLevel: 'anonymous',
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
-        const amount = decodeURI(request.query.get('amt')) || 12;
+        const amount = decodeURI(request.query.get('amt') || 12);
 
         const data = await pool.request().query("SELECT TOP " + amount + " * FROM [dbo].[QuizQuestions]");
     
-        return { body: JSON.stringify(data.recordset) };
+        return { body: data.recordset };
     }
 });
