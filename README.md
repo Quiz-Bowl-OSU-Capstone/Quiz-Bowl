@@ -18,7 +18,7 @@ To set the connection string, create or edit a file called ```local.settings.jso
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "dbconn": "Server=tcp:osuquizbowldb.database.windows.net,1433;Initial Catalog=quizbowldb;Persist Security Info=False;User ID=qzbowladmin;Password=(putpasswordhere);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;"
+    "dbconn": "Server=(url);Persist Security Info=False;User ID=(userID);Password=(putpasswordhere);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=60;"
   }
 }
 ```
