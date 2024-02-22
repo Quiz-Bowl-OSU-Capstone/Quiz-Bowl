@@ -43,7 +43,7 @@ app.http('SearchFilters', {
             }
         }
 
-        resString = "{[" + currentFilters.species + "], [" + currentFilters.resource + "], [" + currentFilters.level + "], [" + currentFilters.topic + "]"
+        resString = "{ \"Species\": [" + currentFilters.species + "], \"Resource\":[" + currentFilters.resource + "], \"Level\":[" + currentFilters.level + "], \"Topic\":[" + currentFilters.topic + "]"
 
         return { body: resString, headers: {
             'Content-Type': 'application/json'
