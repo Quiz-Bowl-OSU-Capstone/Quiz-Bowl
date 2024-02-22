@@ -19,6 +19,7 @@ app.http('PickRandomQuestions', {
         const topic = decodeURI(request.query.get('topic') || "");
         const difficulty = decodeURI(request.query.get('level') || "");
         const species = decodeURI(request.query.get("species") || "");
+        const resource = decodeURI(request.query.get("resource") || "");
         var filters = false;
 
         queryString = "SELECT id FROM [dbo].[QuizQuestions]";
@@ -45,6 +46,16 @@ app.http('PickRandomQuestions', {
                 queryString = queryString + " AND Species LIKE '" + species + "'";
             }
         }
+
+        if (resource.length > 0) {
+            if (!filters) {
+                queryString = queryString + " WHERE Resource LIKE '" + resource + "'";
+                filters = true;
+            } else {
+                queryString = queryString + " AND Resource LIKE '" + resource + "'";
+            }
+        }
+
 
         const qids = await pool.request().query(queryString);
         var totalNum = parseInt(qids.recordset.length);

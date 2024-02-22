@@ -2,15 +2,35 @@ const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
 
-// Will add a question to the database. All parameters listed below are required and need to be encoded in URI format using encodeURI(). The lastupdate parameter needs to be decodable in date-time format.
+/* 
+This function accepts multiple questions to add to the database. Questions must be formatted inside of an array of JSON objects, with the following required properties:
+ - question: STRING - The question to add.
+ - answer: STRING - The answer to the question.
+ - topic: STRING - The topic of the question.
+ - level: STRING - The difficulty level of the question.
+ - species: STRING - The species the question is about.
+ - resource: STRING - The resource the question is about.
 
-// URL Parameters:
-// - qst: STRING - The question.
-// - ans: STRING - The answer.
-// - diff: INT - The difficulty of the question.
-// - topic: STRING - The question topic.
-// - species: STRING - The species of the question.
-// - resource: STRING - The location the question came from.
+ The array must always be sent as a JSON object with a single property, "questions", which contains the array of questions. An example formatted version of a sample question is as follows:
+
+ questions = {
+  "questions": [
+    {
+      "question": "test",
+      "answer": "test",
+      "level": "level",
+      "topic": "topic",
+      "species": "species",
+      "resource": "resource"
+    },
+    {
+      ... so on and so forth...
+    }
+  ]
+}
+
+Make sure to encode the JSON object as a URI component before sending it to the function using encodeURIComponent(JSON.stringify()).
+*/
 
 app.http('AddQuestions', {
     methods: ['GET', 'POST'],
@@ -18,37 +38,28 @@ app.http('AddQuestions', {
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
 
-        const question = decodeURI(request.query.get('qst'));
-        const answer = decodeURI(request.query.get('ans'));
-        const difficulty = decodeURI(request.query.get('diff'));
-        const topic = decodeURI(request.query.get('topic'));
-        const species = decodeURI(request.query.get('species'));
-        const resource = decodeURI(request.query.get('resource'));
-        
-        // lastupdated is automatically set to UTC -8, or PST.
-        var lastupdated = new Date(Date.now() - (1000*60*60*8)).toJSON();
-        var data;
+        var questions = JSON.parse(decodeURIComponent(request.query.get('questions')));
+        var lastupdated = new Date().toJSON();
 
-        if (
-            question != null &&
-            answer != null &&
-            difficulty != null &&
-            topic != null &&
-            species != null &&
-            resource != null &&
-            lastupdated != null
-        ){
-            var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, updated) VALUES ('" + species + "', '" + resource + "', " + difficulty + ", '" + question + "', '" + answer + "', '" + topic + "', '" + lastupdated + "')";
-            console.log(queryText);
-
-            data = await pool.request().query(queryText);
-
-            context.res = {
-                body: data
-            };
-        } else {
-            data = "Error: One or more required parameters is missing. Check and try again."
+        if (questions.questions != undefined && questions.questions.length > 0) {
+            var rowsAffected = 0;
+            for (i = 0; i < questions.questions.length; i++) {
+                var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, updated) VALUES ('"
+                     + questions.questions[i].species + "', '" 
+                     + questions.questions[i].resource + "', '"
+                     + questions.questions[i].level + "', '"
+                     + questions.questions[i].question + "', '" 
+                     + questions.questions[i].answer + "', '" 
+                     + questions.questions[i].topic + "', '" 
+                     + lastupdated + "')";
+                var data = await pool.request().query(queryText);
+                rowsAffected += data.rowsAffected[0];
+            }
         }
-        return { body: JSON.stringify(data) };
+        
+        return { body: "{\"questionsAdded\":" + rowsAffected + "}", headers: {
+            'Content-Type': 'application/json'
+        }};
+        // 
     }
 });
