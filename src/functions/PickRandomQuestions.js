@@ -15,7 +15,7 @@ app.http('PickRandomQuestions', {
     authLevel: 'anonymous',
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
-        const amount = decodeURI(request.query.get('amt') || 25);
+        const amount = parseInt(decodeURI(request.query.get('amt') || 12));
         const topic = decodeURI(request.query.get('topic') || "");
         const difficulty = decodeURI(request.query.get('level') || "");
         const species = decodeURI(request.query.get("species") || "");
@@ -86,6 +86,9 @@ app.http('PickRandomQuestions', {
             }
         }
 
-        return { body: JSON.stringify(results) };
+        return { body: "{\"questions\":" + JSON.stringify(results) + "}", headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        }};
     }
 });
