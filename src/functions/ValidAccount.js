@@ -29,7 +29,8 @@ app.http('ValidAccount', {
             }} ;
         } else {
             return { body: `{"username":"No account found for this information.", "userID":"0"}`, headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }} ;
         }
     }

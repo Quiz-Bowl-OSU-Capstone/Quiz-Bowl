@@ -32,7 +32,8 @@ app.http('RemoveQuestions', {
         }
 
         return { body: "{\"questionsDeleted\":" + rowsAffected + "}", headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
         }};
     }
 });
