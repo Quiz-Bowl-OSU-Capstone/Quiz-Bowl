@@ -8,10 +8,10 @@ app.http('SearchFilters', {
     handler: async (request, context) => {
         const pool = await sql.connect(connString);
         const filters = {
-            species: [""],
-            resource: [""],
-            level: [""],
-            topic: [""]
+            species: [],
+            resource: [],
+            level: [],
+            topic: []
         }
 
         const data = await pool.request().query("SELECT DISTINCT Species, Resource, Level, Topic FROM [dbo].[QuizQuestions]");
@@ -43,7 +43,7 @@ app.http('SearchFilters', {
             }
         }
 
-        resString = "{ \"Species\": [" + currentFilters.species + "], \"Resource\":[" + currentFilters.resource + "], \"Level\":[" + currentFilters.level + "], \"Topic\":[" + currentFilters.topic + "]"
+        resString = "{ \"Species\": [" + currentFilters.species.sort() + "], \"Resource\":[" + currentFilters.resource.sort() + "], \"Level\":[" + currentFilters.level.sort() + "], \"Topic\":[" + currentFilters.topic.sort() + "]"
 
         return { body: resString, headers: {
             'Content-Type': 'application/json',
