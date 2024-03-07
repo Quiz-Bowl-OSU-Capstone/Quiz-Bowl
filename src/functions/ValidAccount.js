@@ -49,7 +49,7 @@ app.http('ValidAccount', {
             })
             console.log(e);
             await Sentry.flush(2000);
-            return { body: "{\"Error occurred\"}", headers: {
+            return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             }};

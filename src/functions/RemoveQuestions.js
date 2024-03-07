@@ -25,25 +25,32 @@ app.http('RemoveQuestions', {
     handler: async (request, context) => {
         try {
             const pool = await sql.connect(connString);
-            var target = decodeURI(request.query.get('ids'));
-            var data = "";
-    
-            if (target.length > 0) {
-                target = target.replace("[", "").replace("]", "");
-                var numbers = target.split(",");
-                var rowsAffected = 0;
-                for (i = 0; i < numbers.length; i++) {
-                    var queryText = "DELETE FROM [dbo].[QuizQuestions] WHERE ID = " + numbers[i];
-                    console.log(queryText);
-                    data = await pool.request().query(queryText);
-                    rowsAffected += data.rowsAffected[0];
+            const uid = decodeURI(request.query.get('uid') || "");
+            const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
+            const authdata = await pool.request().query(authquery);
+            if (authdata.recordset.length > 0) {
+                var target = decodeURI(request.query.get('ids'));
+                var data = "";
+        
+                if (target.length > 0) {
+                    target = target.replace("[", "").replace("]", "");
+                    var numbers = target.split(",");
+                    var rowsAffected = 0;
+                    for (i = 0; i < numbers.length; i++) {
+                        var queryText = "DELETE FROM [dbo].[QuizQuestions] WHERE ID = " + numbers[i];
+                        console.log(queryText);
+                        data = await pool.request().query(queryText);
+                        rowsAffected += data.rowsAffected[0];
+                    }
                 }
+        
+                return { body: "{\"questionsDeleted\":" + rowsAffected + "}", headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }};
+            } else {
+                throw("Invalid user ID provided / No user found with that ID.")
             }
-    
-            return { body: "{\"questionsDeleted\":" + rowsAffected + "}", headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }};
         } catch (e) {
             Sentry.withScope((scope) => {
             scope.setSDKProcessingMetadata({ request: request });
@@ -51,7 +58,7 @@ app.http('RemoveQuestions', {
             })
             console.log(e);
             await Sentry.flush(2000);
-            return { body: "{\"Error occurred\"}", headers: {
+            return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             }};
