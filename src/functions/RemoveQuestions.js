@@ -9,6 +9,9 @@ An example formatted version of question IDs to be deleted is as follows:
 ids=[1,2,3,4,5]
 
 Make sure to encode the JSON object as a URI component before sending it to the function using encodeURIComponent(JSON.stringify()).
+
+Note that all API functions require an additional parameter, "uid", which is the user ID of the user making the request. 
+This is used to authenticate the user and ensure that they have the correct permissions to make the request.
 */
 
 "use strict";

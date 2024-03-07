@@ -2,6 +2,13 @@ const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
 
+/*
+This function will fetch all unique values for the species, resource, level, and topic fields from the database and return them as a JSON object.
+
+Note that all API functions require an additional parameter, "uid", which is the user ID of the user making the request. 
+This is used to authenticate the user and ensure that they have the correct permissions to make the request.
+*/
+
 "use strict";
 
 const Sentry = require("@sentry/node");

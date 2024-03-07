@@ -7,6 +7,9 @@ const connString = process.env.dbconn;
 // URL Parameters:
 // - amt: The amount of results to return. If left blank, default is 12.
 
+//Note that all API functions require an additional parameter, "uid", which is the user ID of the user making the request. 
+//This is used to authenticate the user and ensure that they have the correct permissions to make the request.
+
 "use strict";
 
 const Sentry = require("@sentry/node");
