@@ -30,6 +30,9 @@ This function accepts multiple questions to add to the database. Questions must 
 }
 
 Make sure to encode the JSON object as a URI component before sending it to the function using encodeURIComponent(JSON.stringify()).
+
+Note that all API functions require an additional parameter, "uid", which is the user ID of the user making the request. 
+This is used to authenticate the user and ensure that they have the correct permissions to make the request.
 */
 
 "use strict";
@@ -46,31 +49,36 @@ app.http('AddQuestions', {
     handler: async (request, context) => {
       try {
         const pool = await sql.connect(connString);
-
-        var questions = JSON.parse(decodeURIComponent(request.query.get('questions')));
-        var lastupdated = new Date().toJSON();
-
-        if (questions.questions != undefined && questions.questions.length > 0) {
-            var rowsAffected = 0;
-            for (i = 0; i < questions.questions.length; i++) {
-                var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, updated) VALUES ('"
-                     + questions.questions[i].species + "', '" 
-                     + questions.questions[i].resource + "', '"
-                     + questions.questions[i].level + "', '"
-                     + questions.questions[i].question + "', '" 
-                     + questions.questions[i].answer + "', '" 
-                     + questions.questions[i].topic + "', '" 
-                     + lastupdated + "')";
-                var data = await pool.request().query(queryText);
-                rowsAffected += data.rowsAffected[0];
-            }
-        }
-        
-        return { body: "{\"questionsAdded\":" + rowsAffected + "}", headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        }};
-        // 
+        const uid = decodeURI(request.query.get('uid') || "");
+        const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
+        const authdata = await pool.request().query(authquery);
+        if (authdata.recordset.length > 0) {
+          var questions = JSON.parse(decodeURIComponent(request.query.get('questions')));
+          var lastupdated = new Date().toJSON();
+  
+          if (questions.questions != undefined && questions.questions.length > 0) {
+              var rowsAffected = 0;
+              for (i = 0; i < questions.questions.length; i++) {
+                  var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, updated) VALUES ('"
+                       + questions.questions[i].species + "', '" 
+                       + questions.questions[i].resource + "', '"
+                       + questions.questions[i].level + "', '"
+                       + questions.questions[i].question + "', '" 
+                       + questions.questions[i].answer + "', '" 
+                       + questions.questions[i].topic + "', '" 
+                       + lastupdated + "')";
+                  var data = await pool.request().query(queryText);
+                  rowsAffected += data.rowsAffected[0];
+              }
+          }
+          
+          return { body: "{\"questionsAdded\":" + rowsAffected + "}", headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+          }};
+        } else {
+            throw("Invalid user ID provided / No user found with that ID.")
+        } 
       } catch (e) {
         Sentry.withScope((scope) => {
           scope.setSDKProcessingMetadata({ request: request });
@@ -78,9 +86,9 @@ app.http('AddQuestions', {
         })
         console.log(e);
         await Sentry.flush(2000);
-          return { body: "{\"Error occurred\"}", headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+        return { body: "{\"Error\":\"" + e + "\"}", headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         }};
       }
     }
