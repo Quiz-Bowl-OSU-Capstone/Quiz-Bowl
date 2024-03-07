@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
+    "@sentry/node": "^7.105.0",
+    "@sentry/profiling-node": "^7.105.0",
     "mssql": "^10.0.2"
   },
   "devDependencies": {

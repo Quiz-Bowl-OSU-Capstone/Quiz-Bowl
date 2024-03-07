@@ -7,18 +7,38 @@ const connString = process.env.dbconn;
 // URL Parameters:
 // - amt: The amount of results to return. If left blank, default is 12.
 
+"use strict";
+
+const Sentry = require("@sentry/node");
+
+Sentry.init({
+  dsn: "https://fd74455ce2266338039fbb110857742a@o4506871436607488.ingest.us.sentry.io/4506871438639104",
+});
+
 app.http('ListAllQuestions', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: async (request, context) => {
-        const pool = await sql.connect(connString);
-        const amount = parseInt(decodeURI(request.query.get('amt') || 12));
+        try {
+            const pool = await sql.connect(connString);
+            const amount = parseInt(decodeURI(request.query.get('amt') || 12));
 
-        const data = await pool.request().query("SELECT TOP " + amount + " * FROM [dbo].[QuizQuestions]");
-    
-        return { body: "{\"questions\":" + JSON.stringify(data.recordset) + "}", headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        }};
+            const data = await pool.request().query("SELECT TOP " + amount + " * FROM [dbo].[QuizQuestions]");
+        
+            return { body: "{\"questions\":" + JSON.stringify(data.recordset) + "}", headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }};
+        } catch (e) {
+            Sentry.withScope((scope) => {
+            scope.setSDKProcessingMetadata({ request: request });
+            Sentry.captureException(e);
+            })
+            await Sentry.flush(2000);
+            return { body: "{\"Error occurred\"}", headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }};
+        }
     }
 });
