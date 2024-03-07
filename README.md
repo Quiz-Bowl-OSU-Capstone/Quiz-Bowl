@@ -34,4 +34,4 @@ Creates a new function inside of this application. Select Node for runtime and J
 Runs the function app locally for testing.
 
 #### Other functions
-For full information, check out the [Azure Functions Core Tools Dev Reference](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?programming-language-javascript)
+For full information, check out the [Azure Functions Core Tools Dev Reference](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?programming-language-javascript). You can also contact Aura for help.
