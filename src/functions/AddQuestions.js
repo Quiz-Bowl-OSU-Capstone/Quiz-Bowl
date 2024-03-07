@@ -32,10 +32,19 @@ This function accepts multiple questions to add to the database. Questions must 
 Make sure to encode the JSON object as a URI component before sending it to the function using encodeURIComponent(JSON.stringify()).
 */
 
+"use strict";
+
+const Sentry = require("@sentry/node");
+
+Sentry.init({
+  dsn: "https://fd74455ce2266338039fbb110857742a@o4506871436607488.ingest.us.sentry.io/4506871438639104",
+});
+
 app.http('AddQuestions', {
     methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: async (request, context) => {
+      try {
         const pool = await sql.connect(connString);
 
         var questions = JSON.parse(decodeURIComponent(request.query.get('questions')));
@@ -62,5 +71,17 @@ app.http('AddQuestions', {
             'Access-Control-Allow-Origin': '*'
         }};
         // 
+      } catch (e) {
+        Sentry.withScope((scope) => {
+          scope.setSDKProcessingMetadata({ request: request });
+          Sentry.captureException(e);
+        })
+        console.log(e);
+        await Sentry.flush(2000);
+          return { body: "{\"Error occurred\"}", headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        }};
+      }
     }
 });
