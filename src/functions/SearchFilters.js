@@ -63,6 +63,7 @@ app.http('SearchFilters', {
             scope.setSDKProcessingMetadata({ request: request });
             Sentry.captureException(e);
             })
+            console.log(e);
             await Sentry.flush(2000);
             return { body: "{\"Error occurred\"}", headers: {
                 'Content-Type': 'application/json',

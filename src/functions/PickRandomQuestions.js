@@ -81,7 +81,6 @@ app.http('PickRandomQuestions', {
                 var usedNums = [];
                 for (var i = 0; i < amount; i++) {
                     var randNum = Math.floor(Math.random() * totalNum);
-                    console.log(i + " - " + randNum);
                     if (usedNums.indexOf(randNum) == -1) {
                         usedNums.push(randNum);
 
@@ -104,6 +103,7 @@ app.http('PickRandomQuestions', {
             scope.setSDKProcessingMetadata({ request: request });
             Sentry.captureException(e);
             })
+            console.log(e);
             await Sentry.flush(2000);
             return { body: "{\"Error occurred\"}", headers: {
                 'Content-Type': 'application/json',
