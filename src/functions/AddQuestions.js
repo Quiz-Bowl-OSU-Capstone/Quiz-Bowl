@@ -29,10 +29,14 @@ This function accepts multiple questions to add to the database. Questions must 
   ]
 }
 
-Make sure to encode the JSON object as a URI component before sending it to the function using encodeURIComponent(JSON.stringify()).
+Make sure to encode the JSON object as a URI component before sending it to the function using:
+
+  encodeURIComponent(JSON.stringify()).
 
 Note that all API functions require an additional parameter, "uid", which is the user ID of the user making the request. 
-This is used to authenticate the user and ensure that they have the correct permissions to make the request.
+This is used to authenticate the user and ensure that they have the correct permissions to make the request. This means your final URL will look something like this:
+
+  https://<functionappname>.azurewebsites.net/api/AddQuestions?uid=<uid>&questions=<questions>
 */
 
 "use strict";
@@ -86,10 +90,13 @@ app.http('AddQuestions', {
         })
         console.log(e);
         await Sentry.flush(2000);
-        return { body: "{\"Error\":\"" + e + "\"}", headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }};
+        return { // Always returns a consistent error msg.
+          body: "{\"Error\":\"" + e + "\"}", 
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            }
+        };
       }
     }
 });
