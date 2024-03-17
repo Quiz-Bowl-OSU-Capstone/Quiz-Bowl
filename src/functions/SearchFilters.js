@@ -38,27 +38,27 @@ app.http('SearchFilters', {
         
                 currentFilters = Object.create(filters);
                 for (i = 0; i < data.recordset.length; i++) {
-                    if (currentFilters.species.indexOf(data.recordset[i].Species) < 0) {
+                    if (currentFilters.species.indexOf("\"" + data.recordset[i].Species + "\"") < 0) {
                         if (data.recordset[i].Species != "" && data.recordset[i].Species != null) {
-                            currentFilters.species.push(data.recordset[i].Species);
+                            currentFilters.species.push("\"" + data.recordset[i].Species + "\"");
                         }
                     }
         
-                    if (currentFilters.resource.indexOf(data.recordset[i].Resource) < 0) {
+                    if (currentFilters.resource.indexOf("\"" + data.recordset[i].Resource + "\"") < 0) {
                         if (data.recordset[i].Resource != "" && data.recordset[i].Resource != null) {
-                            currentFilters.resource.push(data.recordset[i].Resource);
+                            currentFilters.resource.push("\"" + data.recordset[i].Resource + "\"");
                         }
                     }
         
-                    if (currentFilters.level.indexOf(data.recordset[i].Level) < 0) {
+                    if (currentFilters.level.indexOf("\"" + data.recordset[i].Level + "\"") < 0) {
                         if (data.recordset[i].Level != "" && data.recordset[i].Level != null) {
-                            currentFilters.level.push(data.recordset[i].Level);
+                            currentFilters.level.push("\"" + data.recordset[i].Level + "\"");
                         }
                     }
         
-                    if (currentFilters.topic.indexOf(data.recordset[i].Topic) < 0) {
+                    if (currentFilters.topic.indexOf("\"" + data.recordset[i].Topic + "\"") < 0) {
                         if (data.recordset[i].Topic != "" && data.recordset[i].Topic != null) {
-                            currentFilters.topic.push(data.recordset[i].Topic);
+                            currentFilters.topic.push("\"" + data.recordset[i].Topic + "\"");
                         }
                     }
                 }
