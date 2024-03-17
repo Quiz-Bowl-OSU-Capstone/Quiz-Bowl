@@ -63,7 +63,7 @@ app.http('SearchFilters', {
                     }
                 }
         
-                resString = "{ \"Species\": [" + currentFilters.species.sort() + "], \"Resource\":[" + currentFilters.resource.sort() + "], \"Level\":[" + currentFilters.level.sort() + "], \"Topic\":[" + currentFilters.topic.sort() + "]"
+                resString = "{ \"Species\": [" + currentFilters.species.sort() + "], \"Resource\":[" + currentFilters.resource.sort() + "], \"Level\":[" + currentFilters.level.sort() + "], \"Topic\":[" + currentFilters.topic.sort() + "]}"
         
                 return { body: resString, headers: {
                     'Content-Type': 'application/json',
