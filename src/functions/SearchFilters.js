@@ -28,10 +28,10 @@ app.http('SearchFilters', {
             const authdata = await pool.request().query(authquery);
             if (authdata.recordset.length > 0) {
                 const filters = {
-                    species: ["\"\""],
-                    resource: ["\"\""],
-                    level: ["\"\""],
-                    topic: ["\"\""]
+                    species: [],
+                    resource: [],
+                    level: [],
+                    topic: []
                 }
         
                 const data = await pool.request().query("SELECT DISTINCT Species, Resource, Level, Topic FROM [dbo].[QuizQuestions]");
