@@ -64,12 +64,12 @@ app.http('EditQuestions', {
                 var rawData = await pool.request().query(query);
 
                 /*
-                Code to perform the actual question editing goes here. 
+                Code to perform the actual question editing goes here. This is a example edit.
                 
                 Ideally, this involves making some sort of SQL query to update the questions in the database. You can essentially think of this as copying the new values into every field of the old question. Just make sure this data is not added as an entirely new question!
 
                 Please also make sure to update the rowsAffected value for each question you edit, as this is used to return the number of questions that were successfully edited.
-                */
+                */ 
                 
                 return {
                     body: "{\"questionsEdited\":" + rowsAffected + "}", headers: { // rowsAffected is the number of questions that were successfully edited.
