@@ -1,6 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
+const local = process.env.ignoreSentry;
 
 // Will check if an account exists in the database and return the account details if it does, or return an error if not.
 
@@ -43,12 +44,15 @@ app.http('ValidAccount', {
                 }} ;
             }
         } catch (e) {
-            Sentry.withScope((scope) => {
-            scope.setSDKProcessingMetadata({ request: request });
-            Sentry.captureException(e);
-            })
-            console.log(e);
-            await Sentry.flush(2000);
+            if (!local) {
+                Sentry.withScope((scope) => {
+                    scope.setSDKProcessingMetadata({ request: request });
+                    Sentry.captureException(e);
+                })
+                console.log(e);
+                await Sentry.flush(2000);
+            }
+            
             return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'

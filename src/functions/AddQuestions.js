@@ -1,6 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
+const local = process.env.ignoreSentry;
 
 /* 
 This function accepts multiple questions to add to the database. Questions must be formatted inside of an array of JSON objects, with the following required properties:
@@ -84,12 +85,15 @@ app.http('AddQuestions', {
             throw("Invalid user ID provided / No user found with that ID.")
         } 
       } catch (e) {
-        Sentry.withScope((scope) => {
-          scope.setSDKProcessingMetadata({ request: request });
-          Sentry.captureException(e);
-        })
-        console.log(e);
-        await Sentry.flush(2000);
+        if (!local) {
+          Sentry.withScope((scope) => {
+            scope.setSDKProcessingMetadata({ request: request });
+            Sentry.captureException(e);
+          })
+          console.log(e);
+          await Sentry.flush(2000);
+        }
+        
         return { // Always returns a consistent error msg.
           body: "{\"Error\":\"" + e + "\"}", 
             headers: {
