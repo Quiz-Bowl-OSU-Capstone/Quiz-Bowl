@@ -1,7 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
-const local = process.env.ignoreSentry;
+const local = process.env.ignoreSentry || true;
 
 /* 
 This function accepts an array of question IDs and updates the lastusagedate field in the database for each question. It takes the following parameters:

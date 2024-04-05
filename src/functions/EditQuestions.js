@@ -1,7 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
-const local = process.env.ignoreSentry;
+const local = process.env.ignoreSentry || true;
 
 /* 
 This function accepts multiple questions to edit the database. Questions must be formatted inside of an array of JSON objects, with the following required properties:

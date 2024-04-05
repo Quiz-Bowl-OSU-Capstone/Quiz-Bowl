@@ -1,7 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
-const local = process.env.ignoreSentry;
+const local = process.env.ignoreSentry || true;
 
 /* 
 This function accepts multiple questions to add to the database. Questions must be formatted inside of an array of JSON objects, with the following required properties:
@@ -93,7 +93,7 @@ app.http('AddQuestions', {
           console.log(e);
           await Sentry.flush(2000);
         }
-        
+
         return { // Always returns a consistent error msg.
           body: "{\"Error\":\"" + e + "\"}", 
             headers: {

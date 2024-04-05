@@ -1,7 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
-const local = process.env.ignoreSentry;
+const local = process.env.ignoreSentry || true;
 
 /*
 This function will fetch all unique values for the species, resource, level, and topic fields from the database and return them as a JSON object.
@@ -82,7 +82,7 @@ app.http('SearchFilters', {
                 console.log(e);
                 await Sentry.flush(2000);
             }
-            
+
             return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'

@@ -1,7 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
-const local = process.env.ignoreSentry;
+const local = process.env.ignoreSentry || true;
 
 // Will fetch a given number of randomly picked questions from the database.
 
@@ -118,7 +118,7 @@ app.http('PickRandomQuestions', {
                 console.log(e);
                 await Sentry.flush(2000);
             }
-            
+
             return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
