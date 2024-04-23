@@ -1,6 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql');
 const connString = process.env.dbconn;
+const local = process.env.ignoreSentry || true;
 
 /* 
 This function accepts an array of question IDs and updates the lastusagedate field in the database for each question. It takes the following parameters:
@@ -72,12 +73,15 @@ app.http('LastUsage', {
                 throw("Invalid user ID provided / No user found with that ID.")
             }
         } catch (e) {
-            Sentry.withScope((scope) => {
-            scope.setSDKProcessingMetadata({ request: request });
-            Sentry.captureException(e);
-            })
-            console.log(e);
-            await Sentry.flush(2000);
+            if (!local) {
+                Sentry.withScope((scope) => {
+                    scope.setSDKProcessingMetadata({ request: request });
+                    Sentry.captureException(e);
+                })
+                console.log(e);
+                await Sentry.flush(2000);
+            }
+
             return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'

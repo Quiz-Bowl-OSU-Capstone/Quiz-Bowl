@@ -1,6 +1,7 @@
 const { app } = require('@azure/functions');
 const sql = require('mssql')
 const connString = process.env.dbconn;
+const local = process.env.ignoreSentry || true;
 
 /* 
 This function accepts multiple questions to remove from the database. Questions are deleted by ID number, and must be formatted in a JSON array of question IDS. 
@@ -55,12 +56,15 @@ app.http('RemoveQuestions', {
                 throw("Invalid user ID provided / No user found with that ID.")
             }
         } catch (e) {
-            Sentry.withScope((scope) => {
-            scope.setSDKProcessingMetadata({ request: request });
-            Sentry.captureException(e);
-            })
-            console.log(e);
-            await Sentry.flush(2000);
+            if (!local) {
+                Sentry.withScope((scope) => {
+                    scope.setSDKProcessingMetadata({ request: request });
+                    Sentry.captureException(e);
+                })
+                console.log(e);
+                await Sentry.flush(2000);
+            }
+
             return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
