@@ -60,20 +60,29 @@ app.http('EditQuestions', {
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
             if (authdata.recordset.length > 0) {
-                var rowsAffected = 0;
-                const query = "";
-                var rawData = await pool.request().query(query);
+                const questionsData = JSON.parse(decodeURIComponent(request.query.get('questions')));
+                let rowsAffected = 0;
+                const lastupdated = new Date().toJSON();
 
-                /*
-                Code to perform the actual question editing goes here. This is a example edit.
-                
-                Ideally, this involves making some sort of SQL query to update the questions in the database. You can essentially think of this as copying the new values into every field of the old question. Just make sure this data is not added as an entirely new question!
+                for (const question of questionsData.questions) {
+                    const updateQuery = `
+                        UPDATE [dbo].[QuizQuestions]
+                        SET Species = '${question.species}',
+                            Resource = '${question.resource}',
+                            Level = '${question.level}',
+                            Question = '${question.question}',
+                            Answer = '${question.answer}',
+                            Topic = '${question.topic}',
+                            updated = '${lastupdated}'
+                        WHERE ID = ${question.id}
+                    `;
+                    const result = await pool.request().query(updateQuery);
+                    rowsAffected += result.rowsAffected[0];
+                }
 
-                Please also make sure to update the rowsAffected value for each question you edit, as this is used to return the number of questions that were successfully edited.
-                */ 
-                
                 return {
-                    body: "{\"questionsEdited\":" + rowsAffected + "}", headers: { // rowsAffected is the number of questions that were successfully edited.
+                    body: JSON.stringify({ questionsEdited: rowsAffected }),
+                    headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     }

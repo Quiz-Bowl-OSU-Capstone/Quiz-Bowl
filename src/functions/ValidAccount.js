@@ -30,18 +30,19 @@ app.http('ValidAccount', {
             const data = await pool.request().query(query);
 
             if (data.recordset.length == 1) {
-                return { body: JSON.stringify(data.recordset[0]), headers: {
-                    'Content-Type': 'application/json'
-                }} ;
+                if (data.recordset[0].username == user && data.recordset[0].password == pass) {
+                    data.recordset[0].password = "*";
+                    return { body: JSON.stringify(data.recordset[0]), headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }} ;
+                } else {
+                    throw("No account found for this information!");
+                }
             } else if (data.recordset.length > 1){
-                return { body: `{"username":"Multiple accounts found with the same information. This is a data error.", "userID":"0"}`, headers: {
-                    'Content-Type': 'application/json'
-                }} ;
+                throw("Multiple accounts found for this information!");
             } else {
-                return { body: `{"username":"No account found for this information.", "userID":"0"}`, headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                }} ;
+                throw("No account found for this information!");
             }
         } catch (e) {
             if (!local) {
@@ -53,7 +54,7 @@ app.http('ValidAccount', {
                 await Sentry.flush(2000);
             }
 
-            return { body: "{\"Error\":\"" + e + "\"}", headers: {
+            return { body: "{\"Error\":\"" + e + "\",\"uid\":-1}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             }};
