@@ -54,17 +54,11 @@ app.http('LastUsage', {
                     if (target.indexOf("null") < 0) {
                         target = target.replace("[", "").replace("]", "");
                         var numbers = target.split(",");
-                        console.log(numbers)
-                        var rowsAffected = 0;
-                        for (i = 0; i < numbers.length; i++) {
-                            var queryText = "UPDATE [dbo].[QuizQuestions] SET lastusagedate = \'" + lastupdated + "\', lastusageevent = \'" + event + "\'WHERE ID = " + numbers[i];
-                            console.log(queryText);
-                            data = await pool.request().query(queryText);
-                            rowsAffected += data.rowsAffected[0];
-                        }
+                        var queryText = "UPDATE [dbo].[QuizQuestions] SET lastusagedate = \'" + lastupdated + "\', lastusageevent = \'" + event + "\' WHERE ID IN (" + numbers + ")";
+                        data = await pool.request().query(queryText);
                     }
 
-                    return { body: "{\"questionsUpdated\":" + rowsAffected + ", \"newdate\": \"" + lastupdated + "\"}", headers: {
+                    return { body: "{\"questionsUpdated\":" + data.rowsAffected[0] + ", \"newdate\": \"" + lastupdated + "\"}", headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
                     }};
