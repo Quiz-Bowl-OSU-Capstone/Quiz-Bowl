@@ -39,7 +39,7 @@ app.http('LastUsage', {
                 var questions = JSON.parse(decodeURIComponent(request.query.get('questions')));
                 var lastupdated = new Date().toJSON();
         
-                if (questions.questions != undefined && questions.questions.length > 0) {
+                if (questions != undefined && questions.length > 0) {
                     var target = decodeURI(request.query.get('ids'));
                     var lastupdated = Date.parse(decodeURI(request.query.get('date')));
                     if (isNaN(lastupdated)) {
