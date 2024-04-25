@@ -36,7 +36,7 @@ app.http('LastUsage', {
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
             if (authdata.recordset.length > 0) {
-                var questions = JSON.parse(decodeURIComponent(request.query.get('questions')));
+                var questions = JSON.parse(decodeURIComponent(request.query.get('ids')));
                 var lastupdated = new Date().toJSON();
         
                 if (questions != undefined && questions.length > 0) {
