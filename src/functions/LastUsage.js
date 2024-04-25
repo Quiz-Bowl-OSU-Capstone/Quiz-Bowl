@@ -6,6 +6,7 @@ const local = process.env.ignoreSentry || true;
 /* 
 This function accepts an array of question IDs and updates the lastusagedate field in the database for each question. It takes the following parameters:
  - ids: JSON ARRAY - An array of question IDs to update the lastusagedate field for.
+ - event: String (Optional) - The event that triggered the update. This can be used to track the last usage event for each question.
  - date: JSON Date String (Optional) - The date to update the lastusagedate field to. If left blank, the current date and time will be used.
 
 An example formatted version of question IDs to be deleted is as follows:
@@ -37,6 +38,7 @@ app.http('LastUsage', {
             const authdata = await pool.request().query(authquery);
             if (authdata.recordset.length > 0) {
                 var questions = JSON.parse(decodeURIComponent(request.query.get('ids')));
+                var event = decodeURIComponent(request.query.get('event') || "");
                 var lastupdated = new Date().toJSON();
         
                 if (questions != undefined && questions.length > 0) {
@@ -55,7 +57,7 @@ app.http('LastUsage', {
                         console.log(numbers)
                         var rowsAffected = 0;
                         for (i = 0; i < numbers.length; i++) {
-                            var queryText = "UPDATE [dbo].[QuizQuestions] SET lastusagedate = \'" + lastupdated + "\' WHERE ID = " + numbers[i];
+                            var queryText = "UPDATE [dbo].[QuizQuestions] SET lastusagedate = \'" + lastupdated + "\', lastusageevent = \'" + event + "\'WHERE ID = " + numbers[i];
                             console.log(queryText);
                             data = await pool.request().query(queryText);
                             rowsAffected += data.rowsAffected[0];
