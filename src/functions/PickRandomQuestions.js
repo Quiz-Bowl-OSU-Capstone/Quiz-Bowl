@@ -10,6 +10,8 @@ const local = process.env.ignoreSentry || true;
 // - topic: STRING - A topic to filter by. If left blank, will not filter by topic.
 // - level: STRING - A difficulty level to filter questions at. If left blank, filter will not apply.
 // - species: STRING - A species to filter questions by. If left blank, filter will not apply.
+// - resource: STRING - A resource to filter questions by. If left blank, filter will not apply.
+// - exclude: ARRAY - An array of question IDs to exclude from the results. If left blank, filter will not apply.
 
 //Note that all API functions require an additional parameter, "uid", which is the user ID of the user making the request. 
 //This is used to authenticate the user and ensure that they have the correct permissions to make the request.
