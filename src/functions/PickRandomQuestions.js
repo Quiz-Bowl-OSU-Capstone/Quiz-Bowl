@@ -37,7 +37,7 @@ app.http('PickRandomQuestions', {
                 const difficulty = decodeURI(request.query.get('level') || "");
                 const species = decodeURI(request.query.get("species") || "");
                 const resource = decodeURI(request.query.get("resource") || "");
-                const exclude = decodeURIComponent(request.query.get("exclude") || "[]");
+                const exclude = decodeURIComponent(request.query.get("exclude") || "[]").replace("[", "(").replace("]", ")");
                 console.log(exclude);
                 var filters = false;
 
@@ -77,10 +77,10 @@ app.http('PickRandomQuestions', {
 
                 if (exclude.length > 0) {
                     if (!filters) {
-                        queryString = queryString + " WHERE Resource LIKE '" + resource + "'";
+                        queryString = queryString + " WHERE id NOT IN " + exclude;
                         filters = true;
                     } else {
-                        queryString = queryString + " AND Resource LIKE '" + resource + "'";
+                        queryString = queryString + " AND id NOT IN " + exclude;
                     }
                 }
 
