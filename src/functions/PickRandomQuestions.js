@@ -77,7 +77,7 @@ app.http('PickRandomQuestions', {
                     }
                 }
 
-                if (exclude.length > 0) {
+                if (exclude.length > 2) {
                     if (!filters) {
                         queryString = queryString + " WHERE id NOT IN " + exclude;
                         filters = true;
