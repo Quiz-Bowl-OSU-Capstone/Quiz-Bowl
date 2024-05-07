@@ -37,6 +37,8 @@ app.http('PickRandomQuestions', {
                 const difficulty = decodeURI(request.query.get('level') || "");
                 const species = decodeURI(request.query.get("species") || "");
                 const resource = decodeURI(request.query.get("resource") || "");
+                const exclude = decodeURIComponent(request.query.get("exclude") || "[]");
+                console.log(exclude);
                 var filters = false;
 
                 queryString = "SELECT id FROM [dbo].[QuizQuestions]";
@@ -65,6 +67,15 @@ app.http('PickRandomQuestions', {
                 }
 
                 if (resource.length > 0) {
+                    if (!filters) {
+                        queryString = queryString + " WHERE Resource LIKE '" + resource + "'";
+                        filters = true;
+                    } else {
+                        queryString = queryString + " AND Resource LIKE '" + resource + "'";
+                    }
+                }
+
+                if (exclude.length > 0) {
                     if (!filters) {
                         queryString = queryString + " WHERE Resource LIKE '" + resource + "'";
                         filters = true;
