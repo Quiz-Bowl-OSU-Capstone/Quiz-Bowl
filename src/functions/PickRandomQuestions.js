@@ -10,6 +10,8 @@ const local = process.env.ignoreSentry || true;
 // - topic: STRING - A topic to filter by. If left blank, will not filter by topic.
 // - level: STRING - A difficulty level to filter questions at. If left blank, filter will not apply.
 // - species: STRING - A species to filter questions by. If left blank, filter will not apply.
+// - resource: STRING - A resource to filter questions by. If left blank, filter will not apply.
+// - exclude: ARRAY - An array of question IDs to exclude from the results. If left blank, filter will not apply.
 
 //Note that all API functions require an additional parameter, "uid", which is the user ID of the user making the request. 
 //This is used to authenticate the user and ensure that they have the correct permissions to make the request.
@@ -37,6 +39,8 @@ app.http('PickRandomQuestions', {
                 const difficulty = decodeURI(request.query.get('level') || "");
                 const species = decodeURI(request.query.get("species") || "");
                 const resource = decodeURI(request.query.get("resource") || "");
+                const exclude = decodeURIComponent(request.query.get("exclude") || "[]").replace("[", "(").replace("]", ")");
+                console.log(exclude);
                 var filters = false;
 
                 queryString = "SELECT id FROM [dbo].[QuizQuestions]";
@@ -70,6 +74,15 @@ app.http('PickRandomQuestions', {
                         filters = true;
                     } else {
                         queryString = queryString + " AND Resource LIKE '" + resource + "'";
+                    }
+                }
+
+                if (exclude.length > 0) {
+                    if (!filters) {
+                        queryString = queryString + " WHERE id NOT IN " + exclude;
+                        filters = true;
+                    } else {
+                        queryString = queryString + " AND id NOT IN " + exclude;
                     }
                 }
 
