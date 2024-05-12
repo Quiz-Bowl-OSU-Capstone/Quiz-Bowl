@@ -63,17 +63,7 @@ app.http('DuplicateDetect', {
 
                 var individualQuestionQuery = "SELECT * FROM [dbo].[QuizQuestions] WHERE question in ('" + questions.join("','") + "') AND answer in ('" + answers.join("','") + "')";
                 var individualData = await pool.request().query(individualQuestionQuery);
-                var endingQuestions = [];
-
-                for (i = 0; i < data.rowsAffected[0]; i++) {
-                    newArray = [];
-                    for (j = 0; j < individualData.recordset.length; j++) {
-                        if (individualData.recordset[j].Question == data.recordset[i].question && individualData.recordset[j].Answer == data.recordset[i].answer) {
-                            newArray.push(individualData.recordset[j]);
-                        }
-                    }
-                    endingQuestions.push(newArray);
-                }
+                var endingQuestions = individualData.recordset;
 
                 return {
                     body: JSON.stringify({ endingQuestions }),
