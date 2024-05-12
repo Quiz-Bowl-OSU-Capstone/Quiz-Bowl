@@ -4,7 +4,7 @@ const connString = process.env.dbconn;
 const local = process.env.ignoreSentry || true;
 
 /* 
-This function searches the database for potential duplicate questions and returns an array that contains up to 10 arrays of questions that are potential duplicates of each other. 
+This function searches the database for potential duplicate questions and returns an array that contains questions that are potential duplicates of each other. 
 
 There are no URL parameters except for the UID parameter used to authenticate the user. The ending format of data looks something like this:
 {
@@ -51,7 +51,7 @@ app.http('DuplicateDetect', {
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
             if (authdata.recordset.length > 0) {
-                const duplicateReq = "SELECT TOP 10 question, answer FROM [dbo].[QuizQuestions] GROUP BY question, answer HAVING count(question) > 1 AND count(answer) > 1";
+                const duplicateReq = "SELECT TOP 1 question, answer FROM [dbo].[QuizQuestions] GROUP BY question, answer HAVING count(question) > 1 AND count(answer) > 1";
                 const data = await pool.request().query(duplicateReq);
                 var questions = [];
                 var answers = [];
