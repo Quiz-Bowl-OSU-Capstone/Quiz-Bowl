@@ -67,12 +67,12 @@ app.http('EditQuestions', {
                 for (const question of questionsData.questions) {
                     const updateQuery = `
                         UPDATE [dbo].[QuizQuestions]
-                        SET Species = '${question.species}',
-                            Resource = '${question.resource}',
-                            Level = '${question.level}',
-                            Question = '${question.question}',
-                            Answer = '${question.answer}',
-                            Topic = '${question.topic}',
+                        SET Species = '${question.species.trim().toUppercase()}',
+                            Resource = '${question.resource.trim().toUppercase()}',
+                            Level = '${question.level.trim().toUppercase()}',
+                            Question = '${question.question.trim()}',
+                            Answer = '${question.answer.trim()}',
+                            Topic = '${question.topic.trim().toUppercase()}',
                             updated = '${lastupdated}'
                         WHERE ID = ${question.id}
                     `;
