@@ -51,15 +51,14 @@ app.http('DuplicateDetect', {
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
             if (authdata.recordset.length > 0) {
-                const duplicateReq = "SELECT TOP 1 question, answer FROM [dbo].[QuizQuestions] GROUP BY question, answer HAVING count(question) > 1 AND count(answer) > 1";
+                const duplicateReq = "SELECT TOP 20 question, answer FROM [dbo].[QuizQuestions] GROUP BY question, answer HAVING count(question) > 1 AND count(answer) > 1";
                 const data = await pool.request().query(duplicateReq);
                 var questions = [];
                 var answers = [];
+                var randInt = Math.floor(Math.random() * data.recordset.length);
 
-                for (i = 0; i < data.recordset.length; i++) {
-                    questions.push(data.recordset[i].question);
-                    answers.push(data.recordset[i].answer);
-                }
+                questions.push(data.recordset[randInt].question);
+                answers.push(data.recordset[randInt].answer);
 
                 var individualQuestionQuery = "SELECT * FROM [dbo].[QuizQuestions] WHERE question in ('" + questions.join("','") + "') AND answer in ('" + answers.join("','") + "')";
                 var individualData = await pool.request().query(individualQuestionQuery);
