@@ -71,35 +71,35 @@ app.http('AddQuestions', {
                   if (questions.questions[i].lastused != undefined){
                     if (questions.questions[i].lastevebn != undefined) {
                       queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, lastusageevent, updated) VALUES ('"
-                       + questions.questions[i].species + "', '" 
-                       + questions.questions[i].resource + "', '"
-                       + questions.questions[i].level + "', '"
-                       + questions.questions[i].question + "', '" 
-                       + questions.questions[i].answer + "', '" 
-                       + questions.questions[i].topic + "', '" 
+                       + questions.questions[i].species.trim().toUpperCase() + "', '" 
+                       + questions.questions[i].resource.trim().toUpperCase() + "', '"
+                       + questions.questions[i].level.trim().toUpperCase() + "', '"
+                       + questions.questions[i].question.trim() + "', '" 
+                       + questions.questions[i].answer.trim() + "', '" 
+                       + questions.questions[i].topic.trim().toUpperCase() + "', '" 
                        + questions.questions[i].lastused + "', '"
-                       + questions.questions[i].lastevent + "', '"
+                       + questions.questions[i].lastevent.trim().toUpperCase() + "', '"
                        + lastupdated + "')";
 
                     } else {
                       queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, updated) VALUES ('"
-                       + questions.questions[i].species + "', '" 
-                       + questions.questions[i].resource + "', '"
-                       + questions.questions[i].level + "', '"
-                       + questions.questions[i].question + "', '" 
-                       + questions.questions[i].answer + "', '" 
-                       + questions.questions[i].topic + "', '" 
+                       + questions.questions[i].species.trim().toUpperCase() + "', '" 
+                       + questions.questions[i].resource.trim().toUpperCase() + "', '"
+                       + questions.questions[i].level.trim().toUpperCase() + "', '"
+                       + questions.questions[i].question.trim() + "', '" 
+                       + questions.questions[i].answer.trim() + "', '" 
+                       + questions.questions[i].topic.trim().toUpperCase() + "', '" 
                        + questions.questions[i].lastused + "', '"
                        + lastupdated + "')";
                     }
                   } else {
                     var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, updated) VALUES ('"
-                       + questions.questions[i].species + "', '" 
-                       + questions.questions[i].resource + "', '"
-                       + questions.questions[i].level + "', '"
-                       + questions.questions[i].question + "', '" 
-                       + questions.questions[i].answer + "', '" 
-                       + questions.questions[i].topic + "', '" 
+                       + questions.questions[i].species.trim().toUpperCase() + "', '" 
+                       + questions.questions[i].resource.trim().toUpperCase() + "', '"
+                       + questions.questions[i].level.trim().toUpperCase() + "', '"
+                       + questions.questions[i].question.trim() + "', '" 
+                       + questions.questions[i].answer.trim() + "', '" 
+                       + questions.questions[i].topic.trim().toUpperCase() + "', '" 
                        + lastupdated + "')";
                   }
                   
