@@ -65,44 +65,38 @@ app.http('AddQuestions', {
   
           if (questions.questions != undefined && questions.questions.length > 0) {
               var rowsAffected = 0;
+              var lastused = "";
+              var lastevent = "";
               for (i = 0; i < questions.questions.length; i++) {
-                  var queryText = "";
-
-                  if (questions.questions[i].lastused != undefined){
-                    if (questions.questions[i].lastevent != undefined) {
-                      queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, lastusageevent, updated) VALUES ('"
-                       + questions.questions[i].species.trim().toUpperCase() + "', '" 
-                       + questions.questions[i].resource.trim().toUpperCase() + "', '"
-                       + questions.questions[i].level.trim().toUpperCase() + "', '"
-                       + questions.questions[i].question.trim() + "', '" 
-                       + questions.questions[i].answer.trim() + "', '" 
-                       + questions.questions[i].topic.trim().toUpperCase() + "', '" 
-                       + questions.questions[i].lastused + "', '"
-                       + questions.questions[i].lastevent.trim().toUpperCase() + "', '"
-                       + lastupdated + "')";
-
-                    } else {
-                      queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, updated) VALUES ('"
-                       + questions.questions[i].species.trim().toUpperCase() + "', '" 
-                       + questions.questions[i].resource.trim().toUpperCase() + "', '"
-                       + questions.questions[i].level.trim().toUpperCase() + "', '"
-                       + questions.questions[i].question.trim() + "', '" 
-                       + questions.questions[i].answer.trim() + "', '" 
-                       + questions.questions[i].topic.trim().toUpperCase() + "', '" 
-                       + questions.questions[i].lastused + "', '"
-                       + lastupdated + "')";
-                    }
+                console.log(questions.questions[i]);
+                if (questions.questions[i].lastused != undefined && questions.questions[i].lastused != "") {
+                  if (questions.questions[i].lastevent != undefined && questions.questions[i].lastevent != "") {
+                    lastused = "'" + questions.questions[i].lastused + "'";
+                    lastevent = "'" + questions.questions[i].lastevent.trim() + "'";
+                    console.log("Last used and last event are defined");
                   } else {
-                    var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, updated) VALUES ('"
-                       + questions.questions[i].species.trim().toUpperCase() + "', '" 
-                       + questions.questions[i].resource.trim().toUpperCase() + "', '"
-                       + questions.questions[i].level.trim().toUpperCase() + "', '"
-                       + questions.questions[i].question.trim() + "', '" 
-                       + questions.questions[i].answer.trim() + "', '" 
-                       + questions.questions[i].topic.trim().toUpperCase() + "', '" 
-                       + null + "', '"
-                       + lastupdated + "')";
+                    lastused = "'" + questions.questions[i].lastused + "'";
+                    lastevent = "NULL";
+                    console.log("Last used was defined but event was not");
                   }
+                } else {
+                  lastused = "NULL";
+                  lastevent = "NULL";
+                  console.log("None were defined");
+                }
+
+                queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, lastusageevent, updated) VALUES ('"
+                + questions.questions[i].species.trim().toUpperCase() + "', '" 
+                + questions.questions[i].resource.trim().toUpperCase() + "', '"
+                + questions.questions[i].level.trim().toUpperCase() + "', '"
+                + questions.questions[i].question.trim() + "', '" 
+                + questions.questions[i].answer.trim() + "', '" 
+                + questions.questions[i].topic.trim().toUpperCase() + "', " 
+                + lastused + ", "
+                + lastevent + ", '"
+                + lastupdated + "')";
+
+                console.log(queryText);
                   
                   var data = await pool.request().query(queryText);
                   rowsAffected += data.rowsAffected[0];
