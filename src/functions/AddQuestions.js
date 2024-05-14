@@ -69,7 +69,7 @@ app.http('AddQuestions', {
                   var queryText = "";
 
                   if (questions.questions[i].lastused != undefined){
-                    if (questions.questions[i].lastevebn != undefined) {
+                    if (questions.questions[i].lastevent != undefined) {
                       queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, lastusageevent, updated) VALUES ('"
                        + questions.questions[i].species.trim().toUpperCase() + "', '" 
                        + questions.questions[i].resource.trim().toUpperCase() + "', '"
@@ -93,13 +93,14 @@ app.http('AddQuestions', {
                        + lastupdated + "')";
                     }
                   } else {
-                    var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, updated) VALUES ('"
+                    var queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, updated) VALUES ('"
                        + questions.questions[i].species.trim().toUpperCase() + "', '" 
                        + questions.questions[i].resource.trim().toUpperCase() + "', '"
                        + questions.questions[i].level.trim().toUpperCase() + "', '"
                        + questions.questions[i].question.trim() + "', '" 
                        + questions.questions[i].answer.trim() + "', '" 
                        + questions.questions[i].topic.trim().toUpperCase() + "', '" 
+                       + null + "', '"
                        + lastupdated + "')";
                   }
                   
