@@ -45,9 +45,9 @@ app.http('LastUsage', {
                     var target = decodeURI(request.query.get('ids'));
                     var lastupdated = Date.parse(decodeURI(request.query.get('date')));
                     if (isNaN(lastupdated)) {
-                        lastupdated = new Date().toJSON();
+                        lastupdated = new Date().toISOString();
                     } else {
-                        lastupdated = new Date(lastupdated).toJSON();
+                        lastupdated = new Date(lastupdated).toISOString();
                     }
                     var data = "";
 

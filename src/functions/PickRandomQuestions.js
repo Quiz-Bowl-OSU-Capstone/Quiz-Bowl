@@ -39,6 +39,7 @@ app.http('PickRandomQuestions', {
                 const difficulty = decodeURI(request.query.get('level') || "");
                 const species = decodeURI(request.query.get("species") || "");
                 const resource = decodeURI(request.query.get("resource") || "");
+                var candiDate = decodeURI(request.query.get("date") || "");
                 const exclude = decodeURIComponent(request.query.get("exclude") || "[]").replace("[", "(").replace("]", ")");
                 console.log(exclude);
                 var filters = false;
@@ -86,6 +87,17 @@ app.http('PickRandomQuestions', {
                     }
                 }
 
+                if (candiDate.length > 0) {
+                    var date = new Date(candiDate);
+                    console.log("Date detected. Filtering by date: " + date.toDateString() + ".");
+                    if (!filters) {
+                        queryString = queryString + " WHERE lastusagedate < '" + date.toISOString().substring(0,10) + "' OR lastusagedate IS NULL";
+                        filters = true;
+                    } else {
+                        queryString = queryString + " AND lastusagedate < '" + date.toISOString().substring(0,10) + "' OR lastusagedate IS NULL";
+                    }
+                }
+                console.log(queryString);
 
                 const qids = await pool.request().query(queryString);
                 var totalNum = parseInt(qids.recordset.length);
