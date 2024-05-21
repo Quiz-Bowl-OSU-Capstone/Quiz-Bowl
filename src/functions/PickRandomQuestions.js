@@ -34,7 +34,7 @@ app.http('PickRandomQuestions', {
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
             if (authdata.recordset.length > 0) {
-                const amount = parseInt(decodeURI(request.query.get('amt') || 12));
+                const amount = parseInt(decodeURI(request.query.get('amt') || 20));
                 const topic = decodeURI(request.query.get('topic') || "");
                 const difficulty = decodeURI(request.query.get('level') || "");
                 const species = decodeURI(request.query.get("species") || "");
