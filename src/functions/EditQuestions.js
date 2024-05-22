@@ -59,11 +59,17 @@ app.http('EditQuestions', {
             const uid = decodeURI(request.query.get('uid') || "");
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
+
+            // If the user is authentic / exists in the database.
             if (authdata.recordset.length > 0) {
+                // Parse the new questions data from the request.
                 const questionsData = JSON.parse(decodeURIComponent(request.query.get('questions')));
+
+                // Variables to keep track of the number of questions edited and update the last updated value.
                 let rowsAffected = 0;
                 const lastupdated = new Date().toJSON();
 
+                // Update each question in the database with the new data one at a time.
                 for (const question of questionsData.questions) {
                     const updateQuery = `
                         UPDATE [dbo].[QuizQuestions]
@@ -80,6 +86,7 @@ app.http('EditQuestions', {
                     rowsAffected += result.rowsAffected[0];
                 }
 
+                // Return the number of questions edited in the response.
                 return {
                     body: JSON.stringify({ questionsEdited: rowsAffected }),
                     headers: {
@@ -91,6 +98,7 @@ app.http('EditQuestions', {
                 throw ("Invalid user ID provided / No user found with that ID.")
             }
         } catch (e) {
+            // If an error occurs, log the error and return a consistent error message. Sentry logging is used for production only.
             if (!local) {
                 Sentry.withScope((scope) => {
                     scope.setSDKProcessingMetadata({ request: request });

@@ -25,10 +25,12 @@ app.http('ValidAccount', {
             const pool = await sql.connect(connString);
             const user = decodeURI(request.query.get('username'));
             const pass = decodeURI(request.query.get('password'));
-            const query = "SELECT * FROM [dbo].[Accounts] WHERE username=N'" + user + "' AND password=N'" + pass + "'"
 
+            // Search for accounts that match the username and password provided.
+            const query = "SELECT * FROM [dbo].[Accounts] WHERE username=N'" + user + "' AND password=N'" + pass + "'"
             const data = await pool.request().query(query);
 
+            // If an account is found, return the account details. Otherwise, return an error.
             if (data.recordset.length == 1) {
                 if (data.recordset[0].username == user && data.recordset[0].password == pass) {
                     data.recordset[0].password = "*";
@@ -39,12 +41,13 @@ app.http('ValidAccount', {
                 } else {
                     throw("No account found for this information!");
                 }
-            } else if (data.recordset.length > 1){
+            } else if (data.recordset.length > 1){ // Multiple accounts found.
                 throw("Multiple accounts found for this information!");
-            } else {
+            } else { // No accounts found.
                 throw("No account found for this information!");
             }
         } catch (e) {
+            // If an error occurs, log the error and return the error message to the user. Only runs if not in a local environment.
             if (!local) {
                 Sentry.withScope((scope) => {
                     scope.setSDKProcessingMetadata({ request: request });
@@ -54,6 +57,7 @@ app.http('ValidAccount', {
                 await Sentry.flush(2000);
             }
 
+            // Return the error message to the user.
             return { body: "{\"Error\":\"" + e + "\",\"uid\":-1}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'

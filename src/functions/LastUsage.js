@@ -36,14 +36,20 @@ app.http('LastUsage', {
             const uid = decodeURI(request.query.get('uid') || "");
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
+
+            // If the user is authentic / exists in the database.
             if (authdata.recordset.length > 0) {
+                // Parse the question IDs and event from the URL parameters. Generate today's date.
                 var questions = JSON.parse(decodeURIComponent(request.query.get('ids')));
                 var event = decodeURIComponent(request.query.get('event') || "");
                 var lastupdated = new Date().toJSON();
         
+                // If questions were provided, update the lastusagedate field for each question.
                 if (questions != undefined && questions.length > 0) {
                     var target = decodeURI(request.query.get('ids'));
                     var lastupdated = Date.parse(decodeURI(request.query.get('date')));
+
+                    // If date is provided, use that date. Otherwise, use the current date and time.
                     if (isNaN(lastupdated)) {
                         lastupdated = new Date().toISOString();
                     } else {
@@ -51,6 +57,7 @@ app.http('LastUsage', {
                     }
                     var data = "";
 
+                    // If targets (question IDs) are provided, create a formatted SQL query to update the lastusagedate field for each of those questions.
                     if (target.indexOf("null") < 0) {
                         target = target.replace("[", "").replace("]", "");
                         var numbers = target.split(",");
@@ -58,6 +65,7 @@ app.http('LastUsage', {
                         data = await pool.request().query(queryText);
                     }
 
+                    // Returns the number of questions updated and the new date for the lastusagedate field.
                     return { body: "{\"questionsUpdated\":" + data.rowsAffected[0] + ", \"newdate\": \"" + lastupdated + "\"}", headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': '*'
@@ -69,6 +77,7 @@ app.http('LastUsage', {
                 throw("Invalid user ID provided / No user found with that ID.")
             }
         } catch (e) {
+            // If an error occurs, log the error and send it to Sentry. Only do so if the function is not running locally (production).
             if (!local) {
                 Sentry.withScope((scope) => {
                     scope.setSDKProcessingMetadata({ request: request });
@@ -78,6 +87,7 @@ app.http('LastUsage', {
                 await Sentry.flush(2000);
             }
 
+            // Return a consistent error if needed.
             return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'

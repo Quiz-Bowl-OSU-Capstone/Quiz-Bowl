@@ -27,16 +27,21 @@ app.http('SearchFilters', {
             const uid = decodeURI(request.query.get('uid') || "");
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
+
+            // If the user is authentic / exists in the database.
             if (authdata.recordset.length > 0) {
+                // Outlining the filters object. It will contain four arrays, each of which contains each distinct value for species, resource, level, and topic.
                 const filters = {
                     species: [],
                     resource: [],
                     level: [],
                     topic: []
                 }
-        
+                
+                // Basically returns all distinct values for species, resource, level, and topic from the database.
                 const data = await pool.request().query("SELECT DISTINCT Species, Resource, Level, Topic FROM [dbo].[QuizQuestions]");
         
+                // Storing each distinct value in the appropriate filters object.
                 currentFilters = Object.create(filters);
                 for (i = 0; i < data.recordset.length; i++) {
                     if (currentFilters.species.indexOf("\"" + data.recordset[i].Species + "\"") < 0) {
@@ -64,8 +69,10 @@ app.http('SearchFilters', {
                     }
                 }
         
+                // Formatting the final string so that it can be sent as an API response.
                 resString = "{ \"Species\": [" + currentFilters.species.sort() + "], \"Resource\":[" + currentFilters.resource.sort() + "], \"Level\":[" + currentFilters.level.sort() + "], \"Topic\":[" + currentFilters.topic.sort() + "]}"
         
+                // Return the filters in a JSON format.
                 return { body: resString, headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
@@ -74,6 +81,7 @@ app.http('SearchFilters', {
                 throw("Invalid user ID provided / No user found with that ID.")
             }
         } catch (e) {
+            // If an error occurs, log the error and return the error message to the user. Only runs if not in a local environment.
             if (!local) {
                 Sentry.withScope((scope) => {
                     scope.setSDKProcessingMetadata({ request: request });
@@ -83,6 +91,7 @@ app.http('SearchFilters', {
                 await Sentry.flush(2000);
             }
 
+            // Return the error message to the user.
             return { body: "{\"Error\":\"" + e + "\"}", headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'

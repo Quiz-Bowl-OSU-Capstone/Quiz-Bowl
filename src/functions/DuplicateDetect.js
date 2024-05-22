@@ -50,20 +50,28 @@ app.http('DuplicateDetect', {
             const uid = decodeURI(request.query.get('uid') || "");
             const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
             const authdata = await pool.request().query(authquery);
+
+            // If the user is authentic / exists in the database.
             if (authdata.recordset.length > 0) {
+                // Fetches the top 20 questions in the database that have a duplicate question and answer.
                 const duplicateReq = "SELECT TOP 20 question, answer FROM [dbo].[QuizQuestions] GROUP BY question, answer HAVING count(question) > 1 AND count(answer) > 1";
                 const data = await pool.request().query(duplicateReq);
                 var questions = [];
                 var answers = [];
+
+                // Randomly picks a question from the resulting data. This is done so that multiple users can get different questions.
                 var randInt = Math.floor(Math.random() * data.recordset.length);
 
+                // Adds the randomly selected question and answer to the arrays.
                 questions.push(data.recordset[randInt].question);
                 answers.push(data.recordset[randInt].answer);
 
+                // Fetches the questions that are potential duplicates of the randomly selected question and answer.
                 var individualQuestionQuery = "SELECT * FROM [dbo].[QuizQuestions] WHERE question in ('" + questions.join("','") + "') AND answer in ('" + answers.join("','") + "')";
                 var individualData = await pool.request().query(individualQuestionQuery);
                 var endingQuestions = individualData.recordset;
 
+                // Returns the questions that are potential duplicates of the randomly selected question and answer.
                 return {
                     body: JSON.stringify({ endingQuestions }),
                     headers: {
@@ -75,6 +83,7 @@ app.http('DuplicateDetect', {
                 throw ("Invalid user ID provided / No user found with that ID.")
             }
         } catch (e) {
+            // If an error occurs, it is logged to the console and sent to Sentry. Errors are only logged if the function is not running locally.
             if (!local) {
                 Sentry.withScope((scope) => {
                     scope.setSDKProcessingMetadata({ request: request });
