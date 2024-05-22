@@ -59,16 +59,23 @@ app.http('AddQuestions', {
         const uid = decodeURI(request.query.get('uid') || "");
         const authquery = "SELECT * FROM [dbo].[Accounts] WHERE uid='" + uid + "'";
         const authdata = await pool.request().query(authquery);
-        if (authdata.recordset.length > 0) {
+
+        // If the user is authentic / exists in the database.
+        if (authdata.recordset.length > 0) { 
           var questions = JSON.parse(decodeURIComponent(request.query.get('questions')));
           var lastupdated = new Date().toJSON();
   
+          // If the questions array is defined and has at least one question.
           if (questions.questions != undefined && questions.questions.length > 0) {
               var rowsAffected = 0;
               var lastused = "";
               var lastevent = "";
+
+              // Loops through each question in the array.
               for (i = 0; i < questions.questions.length; i++) {
-                console.log(questions.questions[i]);
+                // console.log(questions.questions[i]); - for debug purposes
+
+                // If the question has a last used date and event, set them to the variables. Otherwise, leave them blank.
                 if (questions.questions[i].lastused != undefined && questions.questions[i].lastused != "") {
                   if (questions.questions[i].lastevent != undefined && questions.questions[i].lastevent != "") {
                     lastused = "'" + questions.questions[i].lastused + "'";
@@ -85,6 +92,7 @@ app.http('AddQuestions', {
                   console.log("None were defined");
                 }
 
+                // Formatting the query statement to insert the question into the database.
                 queryText = "INSERT INTO [dbo].[QuizQuestions] (Species, Resource, Level, Question, Answer, Topic, lastusagedate, lastusageevent, updated) VALUES ('"
                 + questions.questions[i].species.trim().toUpperCase() + "', '" 
                 + questions.questions[i].resource.trim().toUpperCase() + "', '"
@@ -96,13 +104,14 @@ app.http('AddQuestions', {
                 + lastevent + ", '"
                 + lastupdated + "')";
 
-                console.log(queryText);
+                // console.log(queryText) - for debug purposes
                   
-                  var data = await pool.request().query(queryText);
-                  rowsAffected += data.rowsAffected[0];
+                var data = await pool.request().query(queryText);
+                rowsAffected += data.rowsAffected[0];
               }
           }
           
+          // Returns the wuestions that were added to the database.
           return { body: "{\"questionsAdded\":" + rowsAffected + "}", headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*'
@@ -111,6 +120,7 @@ app.http('AddQuestions', {
             throw("Invalid user ID provided / No user found with that ID.")
         } 
       } catch (e) {
+        // Quizbowl uses Sentry monitoring to track errors in the code. This will send the error to Sentry if it is not running locally (i.e. in a production environment.)
         if (!local) {
           Sentry.withScope((scope) => {
             scope.setSDKProcessingMetadata({ request: request });
@@ -120,7 +130,7 @@ app.http('AddQuestions', {
           await Sentry.flush(2000);
         }
 
-        return { // Always returns a consistent error msg.
+        return { // Always returns an error message.
           body: "{\"Error\":\"" + e + "\"}", 
             headers: {
               'Content-Type': 'application/json',
