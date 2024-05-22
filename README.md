@@ -6,16 +6,17 @@ This repository contains the Azure Functions code for the Quiz Bowl API, a cruci
 This entire repository contains a single Functions app. The src folder contains all of the individual Functions that are part of this app. Each function is contained in its own js file.
 
 ### Pre-requisities
+In order to run this repository locally, you'll need the following tools:
+- NodeJS (at least version 18.17.0 or higher)
+- [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?programming-language-javascript).
 
 To run Functions apps locally for testing, some tools need to be installed and the repo needs to be set up correctly. 
 
 1. Clone the repository to your local machine.
 
-2. Navigate to the folder you cloned the repo inside and run the following command to install all necessary software packages: ```npm install```
+2. Open a terminal window and navigate to the folder you cloned the repo to. Inside the folder, run the following command to install all necessary software packages: ```npm install```
 
-3. Download and install Azure Functions Core Tools. [You can install Azure Functions Core Tools here](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?programming-language-javascript).
-
-4. Run the Functions app locally by using the following command: ```func start```
+3. Run the Functions app locally by using the following command: ```func start```
 
 ### Accessing The Database
 All functions take a connection string as input in order to connect to the database.
