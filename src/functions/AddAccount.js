@@ -45,18 +45,25 @@ app.http('AddAccount', {
                 const newpassword = decodeURIComponent(request.query.get('password') || randomstring.generate({ length: 12, charset: 'alphanumeric' }));
                 const admin = decodeURIComponent(request.query.get('admin') || false);
 
-                // Insert the new account data into the database.
-                const data = await pool.request().query("INSERT INTO [dbo].[Accounts] (username, password, admin) VALUES ('" + newusername + "', '" + newpassword + "', '" + admin + "')");
-                var newAccount = {
-                    "username": newusername,
-                    "password": newpassword
+                const checkQuery = "SELECT * FROM [dbo].[Accounts] WHERE username='" + newusername + "'";
+                const checkData = await pool.request().query(checkQuery);
+
+                if (checkData.recordset.length > 0) {
+                    throw("An account with that username already exists!");
+                } else {
+                    // Insert the new account into the database.
+                    const data = await pool.request().query("INSERT INTO [dbo].[Accounts] (username, password, admin) VALUES ('" + newusername + "', '" + newpassword + "', '" + admin + "')");
+                    var newAccount = {
+                        "username": newusername,
+                        "password": newpassword
+                    }
+                
+                    // Return the account login information in a JSON format.
+                    return { body: JSON.stringify(newAccount), headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }};
                 }
-            
-                // Return the account login information in a JSON format.
-                return { body: JSON.stringify(newAccount), headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                }};
             } else {
                 // Invalid login - was not correct ID or not an admin.
                 throw("Invalid user ID provided / No user found with that ID.")
