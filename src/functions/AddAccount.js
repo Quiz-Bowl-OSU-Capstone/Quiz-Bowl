@@ -47,9 +47,13 @@ app.http('AddAccount', {
 
                 // Insert the new account data into the database.
                 const data = await pool.request().query("INSERT INTO [dbo].[Accounts] (username, password, admin) VALUES ('" + newusername + "', '" + newpassword + "', '" + admin + "')");
+                var newAccount = {
+                    "username": newusername,
+                    "password": newpassword
+                }
             
                 // Return the account login information in a JSON format.
-                return { body: "{\"username\":'" + newusername + "', 'password':'" + newpassword + "'}", headers: {
+                return { body: JSON.stringify(newAccount), headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 }};

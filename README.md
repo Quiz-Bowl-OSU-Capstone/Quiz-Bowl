@@ -37,6 +37,27 @@ Note that the connection string for this database can be found by going to the [
 
 This file allows you to set environment variables that can then be referenced later. For the production Functions app, environment variables can be managed in the Azure Portal under Settings > Configuration. You might have noticed that each function has a section at the end where if a variable called "local" is set to false, Sentry monitoring will be enabled. This environment variable is present on the production deployment, but should not be present in local development testing, as it can clog up logs.
 
+#### Database Structure
+The database consists of two tables inside of a SQL Server service  instance on the Azure Platform. The tables are as follows:
+
+- accounts (stores user accounts for Quizpedia):
+  - username (varchar - maxlength 64 - primary key - unique key)
+  - password (varchar - maxlength 64)
+  - uid (int - length 11-12)
+  - admin (true/false boolean flag, 0 = not admin, 1 = admin)
+
+- quizQuestions (stores question data):
+ - question (varchar - maxlength 256)
+ - answer (varchar - maxlength 256)
+ - species
+ - level
+ - resource
+ - topic
+ - lastusedbydate
+ - lastusedevent
+ - lastupdated
+ - qid
+
 ### Using This Repository
 To use this repository, the following commands can be run in the terminal from the repository folder:
 
