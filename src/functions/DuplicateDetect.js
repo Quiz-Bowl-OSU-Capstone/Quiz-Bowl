@@ -56,6 +56,7 @@ app.http('DuplicateDetect', {
                 // Fetches the top 20 questions in the database that have a duplicate question and answer.
                 const duplicateReq = "SELECT TOP 20 question, answer FROM [dbo].[QuizQuestions] GROUP BY question, answer HAVING count(question) > 1 AND count(answer) > 1";
                 const data = await pool.request().query(duplicateReq);
+
                 var questions = [];
                 var answers = [];
 
@@ -65,10 +66,13 @@ app.http('DuplicateDetect', {
                 // Adds the randomly selected question and answer to the arrays.
                 questions.push(data.recordset[randInt].question);
                 answers.push(data.recordset[randInt].answer);
+                console.log(questions);
 
                 // Fetches the questions that are potential duplicates of the randomly selected question and answer.
                 var individualQuestionQuery = "SELECT * FROM [dbo].[QuizQuestions] WHERE question in ('" + questions.join("','") + "') AND answer in ('" + answers.join("','") + "')";
                 var individualData = await pool.request().query(individualQuestionQuery);
+
+                console.log(individualData)
                 var endingQuestions = individualData.recordset;
 
                 // Returns the questions that are potential duplicates of the randomly selected question and answer.
