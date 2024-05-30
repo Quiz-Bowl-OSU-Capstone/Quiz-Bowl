@@ -73,15 +73,16 @@ app.http('EditQuestions', {
                 for (const question of questionsData.questions) {
                     const updateQuery = `
                         UPDATE [dbo].[QuizQuestions]
-                        SET Species = '${question.species.toString().trim().toUppercase()}',
-                            Resource = '${question.resource.toString().trim().toUppercase()}',
-                            Level = '${question.level.toString().trim().toUppercase()}',
-                            Question = '${question.question.toString().trim()}',
-                            Answer = '${question.answer.toString().trim()}',
-                            Topic = '${question.topic.toString().trim().toUppercase()}',
+                        SET Species = '${question.species.trim().toUpperCase()}',
+                            Resource = '${question.resource.trim()}',
+                            Level = '${question.level.trim().toUpperCase()}',
+                            Question = '${question.question.trim()}',
+                            Answer = '${question.answer.trim()}',
+                            Topic = '${question.topic.trim().toUpperCase()}',
                             updated = '${lastupdated}'
-                        WHERE ID = ${question.id}
+                        WHERE id = ${question.id}
                     `;
+                    console.log(updateQuery);
                     const result = await pool.request().query(updateQuery);
                     rowsAffected += result.rowsAffected[0];
                 }
